@@ -3,6 +3,14 @@ import { useState } from 'react';
 import styles from '../styles/Home.module.css'
 
 const startScan = async (setLogs: Function, setElogs: Function) => {
+  const printCharacteristic = async (characteristic: BluetoothRemoteGATTCharacteristic) => {
+    const uuid = characteristic.uuid;
+    const value = await characteristic.readValue();
+    const data = `>> ${uuid}: ${value}`;
+    console.log(data);
+    setLogs((v: string[]) => [...v, data]);
+  };
+  
   if ('bluetooth' in navigator) {
     try {
       const status = await navigator.bluetooth.getAvailability();
@@ -100,15 +108,8 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
           console.log('chars:', chars.length, chars);
           setLogs((v: string[]) => [...v, `chars:${chars.length}`]);
 
-          // const characteristic = chars[0];
-          // const batteryLevel = await characteristic.readValue();
-          // console.log('batteryLevel:', batteryLevel);
-          // setLogs((v: string[]) => [...v, `${batteryLevel}`]);
-
-          const characteristic = chars[1];
-          const batteryLevel = await characteristic.readValue();
-          console.log('batteryLevel:', batteryLevel);
-          setLogs((v: string[]) => [...v, `${batteryLevel}`]);
+          await printCharacteristic(chars[0]);
+          await printCharacteristic(chars[1]);
 
           // const plist = chars.map(async (characteristic) => {
           //   const value = await characteristic.readValue();
@@ -173,7 +174,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <h2>Bluetooth Demo - v7.18</h2>
+        <h2>Bluetooth Demo - v7.19</h2>
         <div className={styles.section}>
           <button onClick={() => startScan(setLogs, setElogs)}>Start Scan</button>
         </div>
