@@ -109,7 +109,7 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
           setLogs((v: string[]) => [...v, `chars:${chars.length}`]);
 
           await printCharacteristic(chars[0]);
-          await printCharacteristic(chars[1]);
+          // await printCharacteristic(chars[1]);
 
           // const plist = chars.map(async (characteristic) => {
           //   const value = await characteristic.readValue();
@@ -174,7 +174,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <h2>Bluetooth Demo - v7.19</h2>
+        <h2>Bluetooth Demo - v7.20</h2>
         <div className={styles.section}>
           <button onClick={() => startScan(setLogs, setElogs)}>Start Scan</button>
         </div>
