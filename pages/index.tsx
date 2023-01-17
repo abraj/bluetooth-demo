@@ -1,21 +1,87 @@
 import Head from 'next/head'
 import { useState } from 'react';
+import serviceListJson from '../data/gatt-services-list.json';
+import characteristicListJson from '../data/gatt-characteristics-list.json';
 import styles from '../styles/Home.module.css'
-
-let decoder = new TextDecoder('utf-8');
 
 // https://btprodspecificationrefs.blob.core.windows.net/assigned-numbers/Assigned%20Number%20Types/Assigned%20Numbers.pdf
 // https://googlechrome.github.io/samples/web-bluetooth/device-information-characteristics.html
 
-const startScan = async (setLogs: Function, setElogs: Function) => {
-  const printCharacteristic = async (characteristic: BluetoothRemoteGATTCharacteristic) => {
-    const uuid = characteristic.uuid;
-    const value = await characteristic.readValue();
-    const text = decoder.decode(value);
-    console.log(text);
-    setLogs((v: string[]) => [...v, `${uuid}:${text}`]);
-  };
+// https://gist.github.com/sam016/4abe921b5a9ee27f67b3686910293026
+// https://gist.githubusercontent.com/sam016/4abe921b5a9ee27f67b3686910293026/raw/d3d8fb7fca459b9af757f6e4e4e0f1863a646b40/gatt-services-list.json
+// https://gist.githubusercontent.com/sam016/4abe921b5a9ee27f67b3686910293026/raw/d3d8fb7fca459b9af757f6e4e4e0f1863a646b40/gatt-characteristics-list.json
+// https://gist.githubusercontent.com/sam016/4abe921b5a9ee27f67b3686910293026/raw/d3d8fb7fca459b9af757f6e4e4e0f1863a646b40/gatt-descriptors-list.json
 
+interface DataItem {
+  id: string;
+  short_id: string;
+  name: string;
+  code: string;
+}
+type ServiceItem = DataItem;
+type CharacteristicItem = DataItem;
+
+const serviceListMap = new Map<string, ServiceItem>();
+const characteristicListMap = new Map<string, CharacteristicItem>();
+
+const initServiceListMap = () => {
+  serviceListJson.forEach(service => {
+    const short_id = service.id.substring(service.id.lastIndexOf('.') + 1);
+    const serviceItem: ServiceItem = {
+      id: service.id,
+      short_id,
+      name: service.name,
+      code: service.code,
+    }
+    serviceListMap.set(service.code, serviceItem);
+  });  
+};
+
+const initCharacteristicListMap = () => {
+  characteristicListJson.forEach(characteristic => {
+    const short_id = characteristic.id.substring(characteristic.id.lastIndexOf('.') + 1);
+    const characteristicItem: CharacteristicItem = {
+      id: characteristic.id,
+      short_id,
+      name: characteristic.name,
+      code: characteristic.code,
+    }
+    characteristicListMap.set(characteristic.code, characteristicItem);
+  });  
+};
+
+const getShortHexCode = (uuid: number | string) => {
+  let hexCode;
+  if (typeof uuid === 'number') {
+    hexCode = `0x${uuid.toString(16).toUpperCase()}`;
+  } else if (uuid.length > 6) {
+    hexCode = `0x${uuid.substring(4, 8).toUpperCase()}`;
+  } else {
+    hexCode = uuid;
+  }
+  return hexCode;
+};
+
+const getServiceName = (serviceUuid: number | string) => {
+  if (!serviceListMap.size) {
+    return 'Unloaded service..';
+  }
+  const serviceHexCode = getShortHexCode(serviceUuid);
+  return serviceListMap.get(serviceHexCode)?.name || 'Unknown service';
+};
+
+const getCharacteristicName = (characteristicUuid: number | string) => {
+  if (!characteristicListMap.size) {
+    return 'Unloaded characteristic..';
+  }
+  const characteristicHexCode = getShortHexCode(characteristicUuid);
+  return characteristicListMap.get(characteristicHexCode)?.name || 'Unknown characteristic';
+};
+
+let decoder = new TextDecoder('utf-8');
+initServiceListMap();
+
+const startScan = async (setLogs: Function, setElogs: Function) => {
   const printLog = (name: string, value: string | boolean | number | undefined) => {
     if (value === undefined || value === null) value = '';
     const msg = `${name}: ${value.toString()}`;
@@ -31,20 +97,11 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
     setElogs((v: string[]) => [...v, msg]);
   };
 
-  const toHexString = (num: number) => {
-    return `0x${num.toString(16).toUpperCase()}`;
-  };
-
-  const getServiceName = (serviceUuid: number | string) => {
-    if (typeof serviceUuid === 'string') {
-      return 'Unknown service!!';
-    }
-    const servicehexCode = toHexString(serviceUuid);
-    if (servicehexCode === '0x180A') {
-      return 'Device Information service';
-    } else {
-      return 'Unknown service';
-    }
+  const printCharacteristic = async (characteristic: BluetoothRemoteGATTCharacteristic) => {
+    const name = getCharacteristicName(characteristic.uuid);
+    const value = await characteristic.readValue();
+    const text = decoder.decode(value);
+    printLog(name, text);
   };
 
   if (!('bluetooth' in navigator)) {
@@ -58,14 +115,16 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
   
     // window.addEventListener("availabilitychanged", (event) => {});
 
-    // const serviceUuid = 0x180A;
+    const serviceUuid = 0x180A;
     // const serviceUuid = '0000180a-0000-1000-8000-00805f9b34fb';
-    const serviceUuid = 'device_information';
+    // const serviceUuid = 'device_information';
 
-    // printLog('serviceUuid', toHexString(serviceUuid));
-    printLog('serviceUuid', serviceUuid);
+    printLog('A', getShortHexCode(0x180A));
+    printLog('B', getShortHexCode('0000180a-0000-1000-8000-00805f9b34fb'));
+    printLog('serviceUuid1', getServiceName(0x180A));
+    printLog('serviceUuid2', getServiceName('0000180a-0000-1000-8000-00805f9b34fb'));
 
-    const device = await navigator.bluetooth.requestDevice({
+    const devicePr = navigator.bluetooth.requestDevice({
       // acceptAllDevices: true,
       filters: [{
         namePrefix: 'MacBook',
@@ -77,6 +136,12 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
       }],
       optionalServices: [serviceUuid],
     });
+    if (!characteristicListMap.size) {
+      printLog('INFO', 'Loading characteristics..');
+      initCharacteristicListMap();
+    }
+    const device = await devicePr;
+    
     printLog('device.name', device.name);
     printLog('device.id', device.id);
 
@@ -150,7 +215,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <h2>Bluetooth Demo - v8.8</h2>
+        <h2>Bluetooth Demo - v9</h2>
         <div className={styles.section}>
           <button onClick={() => startScan(setLogs, setElogs)}>Start Scan</button>
         </div>
