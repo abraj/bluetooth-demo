@@ -18,8 +18,8 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
         // acceptAllDevices: true,
         filters: [{
           // name: 'MacBook Pro',
-          // namePrefix: 'MacBook',
-          services: ['battery_service'],
+          namePrefix: 'MacBook',
+          // services: ['battery_service'],
           // services: ['heart_rate'],
           // services: [0x1234, 0x12345678, '99999999-0000-1000-8000-00805f9b34fb'],
           // manufacturerData: [{
@@ -27,7 +27,7 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
           //   dataPrefix: new Uint8Array([0x01, 0x02])
           // }],
         }],
-        // optionalServices: ['battery_service'], // Required to access service later.
+        optionalServices: ['battery_service'], // Required to access service later.
       });
       console.log('device:', device);
       setLogs((v: string[]) => [...v, `${device}`]);
@@ -74,7 +74,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <h2>Bluetooth Demo - v5.4</h2>
+        <h2>Bluetooth Demo - v5.5</h2>
         <div className={styles.section}>
           <button onClick={() => startScan(setLogs, setElogs)}>Start Scan</button>
         </div>
