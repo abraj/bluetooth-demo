@@ -62,12 +62,28 @@ const getShortHexCode = (uuid: number | string) => {
   return hexCode;
 };
 
+const getServiceItem = (serviceUuid: number | string) => {
+  if (!serviceListMap.size) {
+    return null;
+  }
+  const serviceHexCode = getShortHexCode(serviceUuid);
+  return serviceListMap.get(serviceHexCode) || null;
+};
+
 const getServiceName = (serviceUuid: number | string) => {
   if (!serviceListMap.size) {
     return 'Unloaded service..';
   }
   const serviceHexCode = getShortHexCode(serviceUuid);
   return serviceListMap.get(serviceHexCode)?.name || 'Unknown service';
+};
+
+const getCharacteristicItem = (characteristicUuid: number | string) => {
+  if (!characteristicListMap.size) {
+    return null;
+  }
+  const characteristicHexCode = getShortHexCode(characteristicUuid);
+  return characteristicListMap.get(characteristicHexCode) || null;
 };
 
 const getCharacteristicName = (characteristicUuid: number | string) => {
@@ -118,6 +134,7 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
     // const serviceUuid = 0x180A;
     const serviceUuid = '0000180a-0000-1000-8000-00805f9b34fb';
     // const serviceUuid = 'device_information';
+    console.log('DUMP:', JSON.stringify(getServiceItem(serviceUuid)));
 
     const devicePr = navigator.bluetooth.requestDevice({
       // acceptAllDevices: true,
@@ -132,7 +149,6 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
       optionalServices: [serviceUuid],
     });
     if (!characteristicListMap.size) {
-      printLog('INFO', 'Loading characteristics..');
       initCharacteristicListMap();
     }
     const device = await devicePr;
@@ -210,7 +226,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <h2>Bluetooth Demo - v9.2</h2>
+        <h2>Bluetooth Demo - v9.3</h2>
         <div className={styles.section}>
           <button onClick={() => startScan(setLogs, setElogs)}>Start Scan</button>
         </div>
