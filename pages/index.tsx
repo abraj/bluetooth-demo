@@ -52,13 +52,37 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
         console.log(`C: ${server.connected}`);
         setLogs((v: string[]) => [...v, `C: ${server.connected}`]);
 
+        server.getPrimaryService(0xaf84).then(service => {
+          console.log('0xaf84:', service);
+          setLogs((v: string[]) => [...v, `0xaf84: ${service}`]);
+        }).catch(err => {
+          console.error('[0xaf84:error]', err);
+          setElogs((v: string[]) => [...v, '0xaf84:error:' + err.toString()]);    
+        });
+
+        server.getPrimaryService('battery_service').then(service => {
+          console.log('battery_service:', service);
+          setLogs((v: string[]) => [...v, `battery_service: ${service}`]);
+        }).catch(err => {
+          console.error('[battery_service:error]', err);
+          setElogs((v: string[]) => [...v, 'battery_service:error:' + err.toString()]);    
+        });
+
+        server.getPrimaryService('heart_rate').then(service => {
+          console.log('heart_rate:', service);
+          setLogs((v: string[]) => [...v, `heart_rate: ${service}`]);
+        }).catch(err => {
+          console.error('[heart_rate:error]', err);
+          setElogs((v: string[]) => [...v, 'heart_rate:error:' + err.toString()]);    
+        });
+
         // const service = await device.gatt?.getPrimaryService(0xaf84);
         // const service = await device.gatt?.getPrimaryService('battery_service');
-        const service = await device.gatt?.getPrimaryService('heart_rate');
+        // const service = await device.gatt?.getPrimaryService('heart_rate');
         // const service = await server.getPrimaryService('battery_service');
 
-        console.log('service:', service);
-        setLogs((v: string[]) => [...v, `${service}`]);
+        // console.log('service:', service);
+        // setLogs((v: string[]) => [...v, `${service}`]);
 
         // const service = await server.getPrimaryService('battery_service');
         // console.log('service:', service);
@@ -110,7 +134,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <h2>Bluetooth Demo - v6.11</h2>
+        <h2>Bluetooth Demo - v6.12</h2>
         <div className={styles.section}>
           <button onClick={() => startScan(setLogs, setElogs)}>Start Scan</button>
         </div>
