@@ -1,9 +1,16 @@
 import Head from 'next/head'
+import { useState } from 'react';
 import styles from '../styles/Home.module.css'
 
-const startScan = async () => {
+const startScan = async (setLogs: Function) => {
   if ('bluetooth' in navigator) {
     try {
+      const status = await navigator.bluetooth.getAvailability();
+      console.log('status:', status);
+      window.addEventListener("availabilitychanged", (event) => {
+        console.log('event:', event);
+      });
+
       const device = await navigator.bluetooth.requestDevice({
         acceptAllDevices: true,
         optionalServices: ['battery_service'], // Required to access service later.
@@ -11,6 +18,7 @@ const startScan = async () => {
         // filters: [{ services: ['heart_rate'] }],
       });
       console.log('device:', device);
+      console.log('device:', JSON.stringify(device));
 
       // Human-readable name of the device.
       console.log(device.name);
@@ -24,8 +32,9 @@ const startScan = async () => {
       // console.log('>>', xx);
 
       // ...
-    } catch (err) {
+    } catch (err: any) {
       console.error('[error]', err);
+      setLogs((v: string[]) => [...v, err.toString()]);
     }
   } else {
     console.warn('Bluetooth not supported!');
@@ -33,6 +42,7 @@ const startScan = async () => {
 };
 
 export default function Home() {
+  const [logs, setLogs] = useState<string[]>([]);
   return (
     <>
       <Head>
@@ -44,7 +54,13 @@ export default function Home() {
       <main className={styles.main}>
         <h2>Bluetooth Demo</h2>
         <div className={styles.section}>
-          <button onClick={() => startScan()}>Start Scan</button>
+          <button onClick={() => startScan(setLogs)}>Start Scan</button>
+        </div>
+        <div>
+          <h3>Logs:</h3>
+          {logs.map((s, i) => (
+            <div key={i}>{s}</div>
+          ))}
         </div>
       </main>
     </>
