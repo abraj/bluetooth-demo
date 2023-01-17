@@ -12,151 +12,99 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
     console.log(text);
     setLogs((v: string[]) => [...v, `${uuid}:${text}`]);
   };
+
+  const printLog = (name: string, value: string | boolean | number | undefined) => {
+    if (value === undefined || value === null) value = '';
+    const msg = `${name}: ${value.toString()}`;
+    console.log(msg);
+    setLogs((v: string[]) => [...v, msg]);
+  };
+
+  const printError = (value: string, isWarn?: boolean) => {
+    if (value === undefined || value === null) value = '';
+    const name = isWarn ? 'WARN' : 'ERROR';
+    const msg = `${name}: ${value.toString()}`;
+    (isWarn ? console.warn : console.error)(msg);
+    setElogs((v: string[]) => [...v, msg]);
+  };
+
+  if (!('bluetooth' in navigator)) {
+    printError('Bluetooth not supported!', true);
+    return;
+  }
   
-  if ('bluetooth' in navigator) {
-    try {
-      const status = await navigator.bluetooth.getAvailability();
-      console.log('status:', status);
-      setLogs((v: string[]) => [...v, `${status}`]);
+  try {
+    // const status = await navigator.bluetooth.getAvailability();
+    // printLog('status', status);
+  
+    // window.addEventListener("availabilitychanged", (event) => {});
 
-      window.addEventListener("availabilitychanged", (event) => {
-        console.log('event:', event);
-        setLogs((v: string[]) => [...v, `${event}`]);
-      });
-
-      const device = await navigator.bluetooth.requestDevice({
-        acceptAllDevices: true,
-        // filters: [{
-          // name: 'MacBook Pro',
-          // namePrefix: 'MacBook',
-          // services: ['battery_service'],
-          // services: ['heart_rate'],
-          // services: [0xaf84],
-          // services: ['0000180a-0000-1000-8000-00805f9b34fb'],
-          // services: [0x1234, 0x12345678, '99999999-0000-1000-8000-00805f9b34fb'],
-          // manufacturerData: [{
-          //   companyIdentifier: 0x00e0,
-          //   dataPrefix: new Uint8Array([0x01, 0x02])
-          // }],
+    const device = await navigator.bluetooth.requestDevice({
+      // acceptAllDevices: true,
+      filters: [{
+        namePrefix: 'MacBook',
+        // manufacturerData: [{
+        //   companyIdentifier: 0x00e0,
+        //   dataPrefix: new Uint8Array([0x01, 0x02])
         // }],
-        optionalServices: ['0000180a-0000-1000-8000-00805f9b34fb'],
-        // optionalServices: [0xaf84, 'battery_service', 'heart_rate', '00001108-0000-1000-8000-00805f9b34fb'],
-        // optionalServices: [0xaf84],
-        // optionalServices: ['battery_service'], // Required to access service later.
-        // optionalServices: ['heart_rate'], // Required to access service later.
-      });
-      console.log('device:', device);
-      setLogs((v: string[]) => [...v, `${device}`]);
-      console.log('device:', JSON.stringify(device));
-      setLogs((v: string[]) => [...v, JSON.stringify(device)]);
+        // services: ['0000180a-0000-1000-8000-00805f9b34fb'],
+      }],
+      optionalServices: ['0000180a-0000-1000-8000-00805f9b34fb'],
+    });
+    printLog('device.name', device.name);
+    printLog('device.id', device.id);
 
-      // Human-readable name of the device.
-      console.log(device.name);
-      setLogs((v: string[]) => [...v, `${device.name}`]);
-
-      // Attempts to connect to remote GATT Server.
-      console.log(`A: ${device.gatt?.connected}`);
-      setLogs((v: string[]) => [...v, `A: ${device.gatt?.connected}`]);
-      const server = await device.gatt?.connect();
-      console.log(`B: ${device.gatt?.connected}`);
-      setLogs((v: string[]) => [...v, `B: ${device.gatt?.connected}`]);
-
-      if (server) {
-        console.log(`C: ${server.connected}`);
-        setLogs((v: string[]) => [...v, `C: ${server.connected}`]);
-
-        // server.getPrimaryService(0xaf84).then(service => {
-        //   console.log('0xaf84:', service);
-        //   setLogs((v: string[]) => [...v, `0xaf84: ${service}`]);
-        // }).catch(err => {
-        //   console.error('[0xaf84:error]', err);
-        //   setElogs((v: string[]) => [...v, '0xaf84:error:' + err.toString()]);    
-        // });
-
-        // server.getPrimaryService('battery_service').then(service => {
-        //   console.log('battery_service:', service);
-        //   setLogs((v: string[]) => [...v, `battery_service: ${service}`]);
-        // }).catch(err => {
-        //   console.error('[battery_service:error]', err);
-        //   setElogs((v: string[]) => [...v, 'battery_service:error:' + err.toString()]);    
-        // });
-
-        // server.getPrimaryService('heart_rate').then(service => {
-        //   console.log('heart_rate:', service);
-        //   setLogs((v: string[]) => [...v, `heart_rate: ${service}`]);
-        // }).catch(err => {
-        //   console.error('[heart_rate:error]', err);
-        //   setElogs((v: string[]) => [...v, 'heart_rate:error:' + err.toString()]);    
-        // });
-
-        // server.getPrimaryService('0000180a-0000-1000-8000-00805f9b34fb').then(service => {
-        //   console.log('5f9b34fb:', service);
-        //   setLogs((v: string[]) => [...v, `5f9b34fb: ${service}`]);
-        // }).catch(err => {
-        //   console.error('[5f9b34fb:error]', err);
-        //   setElogs((v: string[]) => [...v, '5f9b34fb:error:' + err.toString()]);    
-        // });
-
-        const service = await server.getPrimaryService('0000180a-0000-1000-8000-00805f9b34fb');
-        // const service = await device.gatt?.getPrimaryService('battery_service');
-        // const service = await device.gatt?.getPrimaryService('heart_rate');
-        // const service = await server.getPrimaryService('battery_service');
-
-        console.log('service:', service);
-        setLogs((v: string[]) => [...v, `service:${service}`]);
-
-        if (service) {
-          const chars = await service.getCharacteristics();
-          console.log('chars:', chars.length, chars);
-          setLogs((v: string[]) => [...v, `chars:${chars.length}`]);
-
-          await printCharacteristic(chars[0]);
-          await printCharacteristic(chars[1]);
-
-          // const plist = chars.map(async (characteristic) => {
-          //   const value = await characteristic.readValue();
-          //   const data = value.buffer;
-          //   return `uuid,value:${characteristic.uuid},${data}`;
-          // });
-
-          // const dlist = await Promise.all(plist);
-          // dlist.forEach(data => {
-          //   console.log(data);
-          //   setLogs((v: string[]) => [...v, data]);
-          // });
-        }
-
-        // const service = await server.getPrimaryService('battery_service');
-        // console.log('service:', service);
-        // setLogs((v: string[]) => [...v, `${service}`]);
-
-        // console.log(`D: ${device.gatt?.connected}`);
-        // setLogs((v: string[]) => [...v, `D: ${device.gatt?.connected}`]);
-  
-        // const characteristic = await service.getCharacteristic('battery_level');
-        // console.log('characteristic:', characteristic);
-        // setLogs((v: string[]) => [...v, `${characteristic}`]);
-
-        // const batteryLevel = await characteristic.readValue();
-        // console.log('batteryLevel:', batteryLevel);
-        // setLogs((v: string[]) => [...v, `${batteryLevel}`]);
-
-        // console.log('DONE!');
-        // setLogs((v: string[]) => [...v, 'DONE!']);
-
-        // server.getPrimaryService()
-
-        // const xx = await device.gatt?.getPrimaryServices('4hhrN3cyNCPf/LO+VNu1ww==');
-        // console.log('>>', xx);
-      }
-
-      // ...
-    } catch (err: any) {
-      console.error('[error]', err);
-      setElogs((v: string[]) => [...v, err.toString()]);
+    if (!device.gatt) {
+      printError('Bluetooth GATT Server not found!');
+      return;
     }
-  } else {
-    console.warn('Bluetooth not supported!');
+    printLog('device.connected', device.gatt.connected);
+
+    const server = await device.gatt.connect();
+    if (!server) {
+      printError('Bluetooth GATT Server not found! [2]');
+      return;
+    }
+
+    if (!device.gatt.connected) {
+      printError('Unable to connect to Bluetooth GATT Server!');
+      return;
+    }
+    printLog('device.connected', server.connected);
+
+    const serviceUuid = '0000180a-0000-1000-8000-00805f9b34fb';
+    const service = await server.getPrimaryService(serviceUuid);
+    // const service = await server.getPrimaryService('battery_service');
+
+    if (!service) {
+      printError(`Bluetooth GATT Service not found: ${serviceUuid}`);
+      return;
+    }
+    printLog('service.available', !!service);
+
+    const chars = await service.getCharacteristics();
+    printLog('characteristics.count', chars.length);
+
+    await printCharacteristic(chars[0]);
+    await printCharacteristic(chars[1]);
+
+    // const plist = chars.map(async (characteristic) => {
+    //   const value = await characteristic.readValue();
+    //   const data = value.buffer;
+    //   return `uuid,value:${characteristic.uuid},${data}`;
+    // });
+
+    // const dlist = await Promise.all(plist);
+    // dlist.forEach(data => {
+    //   console.log(data);
+    //   setLogs((v: string[]) => [...v, data]);
+    // });
+
+    // const characteristic = await service.getCharacteristic('battery_level');
+    // console.log('characteristic:', characteristic);
+    // setLogs((v: string[]) => [...v, `${characteristic}`]);
+  } catch (err: any) {
+    printError(err.toString());
   }  
 };
 
@@ -176,7 +124,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <h2>Bluetooth Demo - v8.2</h2>
+        <h2>Bluetooth Demo - v8.3</h2>
         <div className={styles.section}>
           <button onClick={() => startScan(setLogs, setElogs)}>Start Scan</button>
         </div>
