@@ -86,6 +86,7 @@ const getShortHexCode = (uuid: number | string) => {
 //   let serviceHexCode = getShortHexCode(serviceId);
 //   if (serviceHexCode && !serviceHexCode.startsWith('0x')) {
 //     serviceHexCode = serviceListMap2.get(serviceId as string)?.code || '';
+//     return serviceListMap2.get(serviceHexCode) || null;
 //   }
 //   return serviceListMap.get(serviceHexCode) || null;
 // };
@@ -209,6 +210,13 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
       printError(`Bluetooth GATT Service not found: ${getShortHexCode(serviceId)}`);
       return;
     }
+
+    let serviceHexCode = getShortHexCode(serviceId);
+    printLog('A', serviceHexCode);
+    if (serviceHexCode && !serviceHexCode.startsWith('0x')) {
+      serviceHexCode = serviceListMap2.get(serviceId as string)?.code || '';
+      printLog('B', serviceHexCode);
+    }  
     printLog('service.name', getServiceName(serviceId));
 
     const chars = await service.getCharacteristics();
@@ -253,7 +261,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <h2>Bluetooth Demo - v9.7</h2>
+        <h2>Bluetooth Demo - v9.8</h2>
         <div className={styles.section}>
           <button onClick={() => startScan(setLogs, setElogs)}>Start Scan</button>
         </div>
