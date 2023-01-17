@@ -9,7 +9,7 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
     const value = await characteristic.readValue();
     // const data = value.buffer.byteLength;
     console.log(value);
-    setLogs((v: string[]) => [...v, `${value}}`]);
+    setLogs((v: string[]) => [...v, value]);
   };
   
   if ('bluetooth' in navigator) {
@@ -175,7 +175,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <h2>Bluetooth Demo - v7.23</h2>
+        <h2>Bluetooth Demo - v7.24</h2>
         <div className={styles.section}>
           <button onClick={() => startScan(setLogs, setElogs)}>Start Scan</button>
         </div>
