@@ -100,16 +100,22 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
           console.log('chars:', chars.length, chars);
           setLogs((v: string[]) => [...v, `chars:${chars.length}`]);
 
-          const plist = chars.map(async (characteristic) => {
-            const value = await characteristic.readValue();
-            return `uuid,value:${characteristic.uuid},${value}`;
-          });
+          const characteristic = chars[0];
+          const batteryLevel = await characteristic.readValue();
+          console.log('batteryLevel:', batteryLevel);
+          setLogs((v: string[]) => [...v, `${batteryLevel}`]);
 
-          const dlist = await Promise.all(plist);
-          dlist.forEach(data => {
-            console.log(data);
-            setLogs((v: string[]) => [...v, data]);
-          });
+          // const plist = chars.map(async (characteristic) => {
+          //   const value = await characteristic.readValue();
+          //   const data = value.buffer;
+          //   return `uuid,value:${characteristic.uuid},${data}`;
+          // });
+
+          // const dlist = await Promise.all(plist);
+          // dlist.forEach(data => {
+          //   console.log(data);
+          //   setLogs((v: string[]) => [...v, data]);
+          // });
         }
 
         // const service = await server.getPrimaryService('battery_service');
@@ -162,7 +168,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <h2>Bluetooth Demo - v7.16</h2>
+        <h2>Bluetooth Demo - v7.17</h2>
         <div className={styles.section}>
           <button onClick={() => startScan(setLogs, setElogs)}>Start Scan</button>
         </div>
