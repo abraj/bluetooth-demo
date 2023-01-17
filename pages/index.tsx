@@ -7,9 +7,10 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
     // const uuid = characteristic.uuid;
     // characteristic.properties.
     const value = await characteristic.readValue();
+    const text = new TextDecoder().decode(value);
     // const data = value.buffer.byteLength;
-    console.log(value);
-    setLogs((v: string[]) => [...v, value]);
+    console.log(text);
+    setLogs((v: string[]) => [...v, `${typeof text}:${text.length}`]);
   };
   
   if ('bluetooth' in navigator) {
@@ -109,8 +110,8 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
           console.log('chars:', chars.length, chars);
           setLogs((v: string[]) => [...v, `chars:${chars.length}`]);
 
-          await printCharacteristic(chars[0]);
-          // await printCharacteristic(chars[1]);
+          // await printCharacteristic(chars[0]);
+          await printCharacteristic(chars[1]);
 
           // const plist = chars.map(async (characteristic) => {
           //   const value = await characteristic.readValue();
@@ -175,7 +176,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <h2>Bluetooth Demo - v7.24</h2>
+        <h2>Bluetooth Demo - v7.25</h2>
         <div className={styles.section}>
           <button onClick={() => startScan(setLogs, setElogs)}>Start Scan</button>
         </div>
