@@ -28,6 +28,19 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
     setElogs((v: string[]) => [...v, msg]);
   };
 
+  const toHexString = (num: number) => {
+    return `0x${num.toString(16).toUpperCase()}`;
+  };
+
+  const getServiceName = (serviceUuid: number) => {
+    const servicehexCode = toHexString(serviceUuid);
+    if (servicehexCode === '0x180A') {
+      return 'Device Information service';
+    } else {
+      return 'Unknown service';
+    }
+  };
+
   if (!('bluetooth' in navigator)) {
     printError('Bluetooth not supported!', true);
     return;
@@ -41,7 +54,7 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
 
     const serviceUuid = 0x180A;
     // const serviceUuid = '0000180a-0000-1000-8000-00805f9b34fb';
-    printLog('serviceUuid', serviceUuid.toString(16));
+    printLog('serviceUuid', toHexString(serviceUuid));
 
     const device = await navigator.bluetooth.requestDevice({
       // acceptAllDevices: true,
@@ -75,6 +88,7 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
       return;
     }
     printLog('device.connected', server.connected);
+    printLog('------', '------');
 
     const service = await server.getPrimaryService(serviceUuid);
     // const service = await server.getPrimaryService('battery_service');
@@ -83,7 +97,7 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
       printError(`Bluetooth GATT Service not found: ${serviceUuid}`);
       return;
     }
-    printLog('service.available', !!service);
+    printLog('service.name', getServiceName(serviceUuid));
 
     const chars = await service.getCharacteristics();
     printLog('characteristics.count', chars.length);
@@ -127,7 +141,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <h2>Bluetooth Demo - v8.5</h2>
+        <h2>Bluetooth Demo - v8.6</h2>
         <div className={styles.section}>
           <button onClick={() => startScan(setLogs, setElogs)}>Start Scan</button>
         </div>
