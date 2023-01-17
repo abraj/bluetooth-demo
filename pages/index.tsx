@@ -15,7 +15,7 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
       });
 
       const device = await navigator.bluetooth.requestDevice({
-        acceptAllDevices: true,
+        // acceptAllDevices: true,
         filters: [{
           // name: 'MacBook Pro',
           // namePrefix: 'MacBook',
@@ -136,7 +136,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <h2>Bluetooth Demo - v7.1</h2>
+        <h2>Bluetooth Demo - v7.2</h2>
         <div className={styles.section}>
           <button onClick={() => startScan(setLogs, setElogs)}>Start Scan</button>
         </div>
