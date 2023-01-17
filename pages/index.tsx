@@ -15,20 +15,21 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
       });
 
       const device = await navigator.bluetooth.requestDevice({
-        // acceptAllDevices: true,
-        filters: [{
+        acceptAllDevices: true,
+        // filters: [{
           // name: 'MacBook Pro',
           // namePrefix: 'MacBook',
           // services: ['battery_service'],
           // services: ['heart_rate'],
           // services: [0xaf84],
-          services: ['0000180a-0000-1000-8000-00805f9b34fb'],
+          // services: ['0000180a-0000-1000-8000-00805f9b34fb'],
           // services: [0x1234, 0x12345678, '99999999-0000-1000-8000-00805f9b34fb'],
           // manufacturerData: [{
           //   companyIdentifier: 0x00e0,
           //   dataPrefix: new Uint8Array([0x01, 0x02])
           // }],
-        }],
+        // }],
+        optionalServices: ['0000180a-0000-1000-8000-00805f9b34fb'],
         // optionalServices: [0xaf84, 'battery_service', 'heart_rate', '00001108-0000-1000-8000-00805f9b34fb'],
         // optionalServices: [0xaf84],
         // optionalServices: ['battery_service'], // Required to access service later.
@@ -144,7 +145,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <h2>Bluetooth Demo - v7.6</h2>
+        <h2>Bluetooth Demo - v7.7</h2>
         <div className={styles.section}>
           <button onClick={() => startScan(setLogs, setElogs)}>Start Scan</button>
         </div>
