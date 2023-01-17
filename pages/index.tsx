@@ -7,11 +7,11 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
     try {
       const status = await navigator.bluetooth.getAvailability();
       console.log('status:', status);
-      setLogs((v: string[]) => [...v, status]);
+      setLogs((v: string[]) => [...v, `${status}`]);
 
       window.addEventListener("availabilitychanged", (event) => {
         console.log('event:', event);
-        setLogs((v: string[]) => [...v, event]);
+        setLogs((v: string[]) => [...v, `${event}`]);
       });
 
       const device = await navigator.bluetooth.requestDevice({
@@ -21,13 +21,13 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
         // filters: [{ services: ['heart_rate'] }],
       });
       console.log('device:', device);
-      setLogs((v: string[]) => [...v, device]);
+      setLogs((v: string[]) => [...v, `${device}`]);
       console.log('device:', JSON.stringify(device));
       setLogs((v: string[]) => [...v, JSON.stringify(device)]);
 
       // Human-readable name of the device.
       console.log(device.name);
-      setLogs((v: string[]) => [...v, device.name]);
+      setLogs((v: string[]) => [...v, `${device.name}`]);
 
       // Attempts to connect to remote GATT Server.
       console.log(`A: ${device.gatt?.connected}`);
@@ -61,7 +61,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <h2>Bluetooth Demo - v3</h2>
+        <h2>Bluetooth Demo - v4</h2>
         <div className={styles.section}>
           <button onClick={() => startScan(setLogs, setElogs)}>Start Scan</button>
         </div>
