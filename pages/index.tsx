@@ -18,8 +18,8 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
         // acceptAllDevices: true,
         filters: [{
           // name: 'MacBook Pro',
-          namePrefix: 'MacBook',
-          // services: ['battery_service'],
+          // namePrefix: 'MacBook',
+          services: ['battery_service'],
           // services: ['heart_rate'],
           // services: [0x1234, 0x12345678, '99999999-0000-1000-8000-00805f9b34fb'],
           // manufacturerData: [{
@@ -74,7 +74,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <h2>Bluetooth Demo - v5.3</h2>
+        <h2>Bluetooth Demo - v5.4</h2>
         <div className={styles.section}>
           <button onClick={() => startScan(setLogs, setElogs)}>Start Scan</button>
         </div>
