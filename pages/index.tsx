@@ -4,6 +4,9 @@ import styles from '../styles/Home.module.css'
 
 let decoder = new TextDecoder('utf-8');
 
+// https://btprodspecificationrefs.blob.core.windows.net/assigned-numbers/Assigned%20Number%20Types/Assigned%20Numbers.pdf
+// https://googlechrome.github.io/samples/web-bluetooth/device-information-characteristics.html
+
 const startScan = async (setLogs: Function, setElogs: Function) => {
   const printCharacteristic = async (characteristic: BluetoothRemoteGATTCharacteristic) => {
     const uuid = characteristic.uuid;
@@ -32,7 +35,10 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
     return `0x${num.toString(16).toUpperCase()}`;
   };
 
-  const getServiceName = (serviceUuid: number) => {
+  const getServiceName = (serviceUuid: number | string) => {
+    if (typeof serviceUuid === 'string') {
+      return 'Unknown service!';
+    }
     const servicehexCode = toHexString(serviceUuid);
     if (servicehexCode === '0x180A') {
       return 'Device Information service';
@@ -52,9 +58,12 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
   
     // window.addEventListener("availabilitychanged", (event) => {});
 
-    const serviceUuid = 0x180A;
-    // const serviceUuid = '0000180a-0000-1000-8000-00805f9b34fb';
-    printLog('serviceUuid', toHexString(serviceUuid));
+    // const serviceUuid = 0x180A;
+    const serviceUuid = '0000180a-0000-1000-8000-00805f9b34fb';
+    // const serviceUuid = 'device_information';
+
+    // printLog('serviceUuid', toHexString(serviceUuid));
+    printLog('serviceUuid', serviceUuid);
 
     const device = await navigator.bluetooth.requestDevice({
       // acceptAllDevices: true,
@@ -141,7 +150,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <h2>Bluetooth Demo - v8.6</h2>
+        <h2>Bluetooth Demo - v8.7</h2>
         <div className={styles.section}>
           <button onClick={() => startScan(setLogs, setElogs)}>Start Scan</button>
         </div>
