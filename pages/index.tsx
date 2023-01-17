@@ -215,7 +215,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <h2>Bluetooth Demo - v9</h2>
+        <h2>Bluetooth Demo - v9.1</h2>
         <div className={styles.section}>
           <button onClick={() => startScan(setLogs, setElogs)}>Start Scan</button>
         </div>
