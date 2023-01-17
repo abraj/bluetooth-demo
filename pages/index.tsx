@@ -18,16 +18,17 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
         // acceptAllDevices: true,
         filters: [{
           // name: 'MacBook Pro',
-          namePrefix: 'MacBook',
+          // namePrefix: 'MacBook',
           // services: ['battery_service'],
           // services: ['heart_rate'],
+          services: [0xaf84],
           // services: [0x1234, 0x12345678, '99999999-0000-1000-8000-00805f9b34fb'],
           // manufacturerData: [{
           //   companyIdentifier: 0x00e0,
           //   dataPrefix: new Uint8Array([0x01, 0x02])
           // }],
         }],
-        optionalServices: ['battery_service'], // Required to access service later.
+        // optionalServices: ['battery_service'], // Required to access service later.
       });
       console.log('device:', device);
       setLogs((v: string[]) => [...v, `${device}`]);
@@ -53,19 +54,21 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
         console.log('service:', service);
         setLogs((v: string[]) => [...v, `${service}`]);
 
-        console.log(`D: ${device.gatt?.connected}`);
-        setLogs((v: string[]) => [...v, `D: ${device.gatt?.connected}`]);
+        // console.log(`D: ${device.gatt?.connected}`);
+        // setLogs((v: string[]) => [...v, `D: ${device.gatt?.connected}`]);
   
-        const characteristic = await service.getCharacteristic('battery_level');
-        console.log('characteristic:', characteristic);
-        setLogs((v: string[]) => [...v, `${characteristic}`]);
+        // const characteristic = await service.getCharacteristic('battery_level');
+        // console.log('characteristic:', characteristic);
+        // setLogs((v: string[]) => [...v, `${characteristic}`]);
 
-        const batteryLevel = await characteristic.readValue();
-        console.log('batteryLevel:', batteryLevel);
-        setLogs((v: string[]) => [...v, `${batteryLevel}`]);
+        // const batteryLevel = await characteristic.readValue();
+        // console.log('batteryLevel:', batteryLevel);
+        // setLogs((v: string[]) => [...v, `${batteryLevel}`]);
 
-        console.log('DONE!');
-        setLogs((v: string[]) => [...v, 'DONE!']);
+        // console.log('DONE!');
+        // setLogs((v: string[]) => [...v, 'DONE!']);
+
+        // server.getPrimaryService()
 
         // const xx = await device.gatt?.getPrimaryServices('4hhrN3cyNCPf/LO+VNu1ww==');
         // console.log('>>', xx);
@@ -97,7 +100,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <h2>Bluetooth Demo - v6.1</h2>
+        <h2>Bluetooth Demo - v6.2</h2>
         <div className={styles.section}>
           <button onClick={() => startScan(setLogs, setElogs)}>Start Scan</button>
         </div>
