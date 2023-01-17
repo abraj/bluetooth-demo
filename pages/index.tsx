@@ -79,21 +79,27 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
         //   setElogs((v: string[]) => [...v, 'heart_rate:error:' + err.toString()]);    
         // });
 
-        server.getPrimaryService('0000180a-0000-1000-8000-00805f9b34fb').then(service => {
-          console.log('5f9b34fb:', service);
-          setLogs((v: string[]) => [...v, `5f9b34fb: ${service}`]);
-        }).catch(err => {
-          console.error('[5f9b34fb:error]', err);
-          setElogs((v: string[]) => [...v, '5f9b34fb:error:' + err.toString()]);    
-        });
+        // server.getPrimaryService('0000180a-0000-1000-8000-00805f9b34fb').then(service => {
+        //   console.log('5f9b34fb:', service);
+        //   setLogs((v: string[]) => [...v, `5f9b34fb: ${service}`]);
+        // }).catch(err => {
+        //   console.error('[5f9b34fb:error]', err);
+        //   setElogs((v: string[]) => [...v, '5f9b34fb:error:' + err.toString()]);    
+        // });
 
-        // const service = await device.gatt?.getPrimaryService(0xaf84);
+        const service = await server.getPrimaryService('0000180a-0000-1000-8000-00805f9b34fb');
         // const service = await device.gatt?.getPrimaryService('battery_service');
         // const service = await device.gatt?.getPrimaryService('heart_rate');
         // const service = await server.getPrimaryService('battery_service');
 
-        // console.log('service:', service);
-        // setLogs((v: string[]) => [...v, `${service}`]);
+        console.log('service:', service);
+        setLogs((v: string[]) => [...v, `service:${service}`]);
+
+        if (service) {
+          const chars = await service.getCharacteristics();
+          console.log('chars:', chars);
+          setLogs((v: string[]) => [...v, `chars:${service}`]);  
+        }
 
         // const service = await server.getPrimaryService('battery_service');
         // console.log('service:', service);
@@ -145,7 +151,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <h2>Bluetooth Demo - v7.7</h2>
+        <h2>Bluetooth Demo - v7.8</h2>
         <div className={styles.section}>
           <button onClick={() => startScan(setLogs, setElogs)}>Start Scan</button>
         </div>
