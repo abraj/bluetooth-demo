@@ -22,7 +22,12 @@ type ServiceItem = DataItem;
 type CharacteristicItem = DataItem;
 
 const serviceListMap = new Map<string, ServiceItem>();
+const serviceListMap2 = new Map<string, ServiceItem>();
 const characteristicListMap = new Map<string, CharacteristicItem>();
+const characteristicListMap2 = new Map<string, CharacteristicItem>();
+
+const initServiceListError: string[] = [];
+const initCharacteristicListError: string[] = [];
 
 const initServiceListMap = () => {
   serviceListJson.forEach(service => {
@@ -33,7 +38,13 @@ const initServiceListMap = () => {
       name: service.name,
       code: service.code,
     }
+
     serviceListMap.set(service.code, serviceItem);
+    if (serviceListMap2.get(short_id)) {
+      initServiceListError.push(`service name conflict: ${short_id}`);
+    } else {
+      serviceListMap2.set(short_id, serviceItem);  
+    }
   });  
 };
 
@@ -46,7 +57,13 @@ const initCharacteristicListMap = () => {
       name: characteristic.name,
       code: characteristic.code,
     }
+
     characteristicListMap.set(characteristic.code, characteristicItem);
+    if (characteristicListMap2.get(short_id)) {
+      initCharacteristicListError.push(`characteristic name conflict: ${short_id}`);
+    } else {
+      characteristicListMap2.set(short_id, characteristicItem);  
+    }
   });  
 };
 
@@ -134,7 +151,6 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
     // const serviceUuid = 0x180A;
     const serviceUuid = '0000180a-0000-1000-8000-00805f9b34fb';
     // const serviceUuid = 'device_information';
-    printLog('DUMP', JSON.stringify(getServiceItem(serviceUuid)));
 
     const devicePr = navigator.bluetooth.requestDevice({
       // acceptAllDevices: true,
@@ -152,6 +168,11 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
       initCharacteristicListMap();
     }
     const device = await devicePr;
+
+    [...initServiceListError, ...initCharacteristicListError].forEach(error => {
+      printError(error);
+      return;
+    });
     
     printLog('device.name', device.name);
     printLog('device.id', device.id);
@@ -226,7 +247,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <h2>Bluetooth Demo - v9.4</h2>
+        <h2>Bluetooth Demo - v9.6</h2>
         <div className={styles.section}>
           <button onClick={() => startScan(setLogs, setElogs)}>Start Scan</button>
         </div>
