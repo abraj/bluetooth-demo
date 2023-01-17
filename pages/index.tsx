@@ -134,7 +134,7 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
     // const serviceUuid = 0x180A;
     const serviceUuid = '0000180a-0000-1000-8000-00805f9b34fb';
     // const serviceUuid = 'device_information';
-    console.log('DUMP:', JSON.stringify(getServiceItem(serviceUuid)));
+    printLog('DUMP', JSON.stringify(getServiceItem(serviceUuid)));
 
     const devicePr = navigator.bluetooth.requestDevice({
       // acceptAllDevices: true,
@@ -226,7 +226,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <h2>Bluetooth Demo - v9.3</h2>
+        <h2>Bluetooth Demo - v9.4</h2>
         <div className={styles.section}>
           <button onClick={() => startScan(setLogs, setElogs)}>Start Scan</button>
         </div>
