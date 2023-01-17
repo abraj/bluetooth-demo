@@ -2,12 +2,14 @@ import Head from 'next/head'
 import { useState } from 'react';
 import styles from '../styles/Home.module.css'
 
+let decoder = new TextDecoder('utf-8');
+
 const startScan = async (setLogs: Function, setElogs: Function) => {
   const printCharacteristic = async (characteristic: BluetoothRemoteGATTCharacteristic) => {
     // const uuid = characteristic.uuid;
     // characteristic.properties.
     const value = await characteristic.readValue();
-    const text = new TextDecoder().decode(value);
+    const text = decoder.decode(value);
     // const data = value.buffer.byteLength;
     console.log(text);
     setLogs((v: string[]) => [...v, `${typeof text}:${text.length}`]);
@@ -176,7 +178,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <h2>Bluetooth Demo - v7.25</h2>
+        <h2>Bluetooth Demo - v8</h2>
         <div className={styles.section}>
           <button onClick={() => startScan(setLogs, setElogs)}>Start Scan</button>
         </div>
