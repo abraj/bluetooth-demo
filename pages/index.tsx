@@ -115,14 +115,9 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
   
     // window.addEventListener("availabilitychanged", (event) => {});
 
-    const serviceUuid = 0x180A;
-    // const serviceUuid = '0000180a-0000-1000-8000-00805f9b34fb';
+    // const serviceUuid = 0x180A;
+    const serviceUuid = '0000180a-0000-1000-8000-00805f9b34fb';
     // const serviceUuid = 'device_information';
-
-    printLog('A', getShortHexCode(0x180A));
-    printLog('B', getShortHexCode('0000180a-0000-1000-8000-00805f9b34fb'));
-    printLog('serviceUuid1', getServiceName(0x180A));
-    printLog('serviceUuid2', getServiceName('0000180a-0000-1000-8000-00805f9b34fb'));
 
     const devicePr = navigator.bluetooth.requestDevice({
       // acceptAllDevices: true,
@@ -168,7 +163,7 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
     // const service = await server.getPrimaryService('battery_service');
 
     if (!service) {
-      printError(`Bluetooth GATT Service not found: ${serviceUuid}`);
+      printError(`Bluetooth GATT Service not found: ${getShortHexCode(serviceUuid)}`);
       return;
     }
     printLog('service.name', getServiceName(serviceUuid));
@@ -215,7 +210,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <h2>Bluetooth Demo - v9.1</h2>
+        <h2>Bluetooth Demo - v9.2</h2>
         <div className={styles.section}>
           <button onClick={() => startScan(setLogs, setElogs)}>Start Scan</button>
         </div>
