@@ -68,10 +68,11 @@ const initCharacteristicListMap = () => {
 };
 
 const getShortHexCode = (uuid: number | string) => {
+  const regexExp = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/gi;
   let hexCode;
   if (typeof uuid === 'number') {
     hexCode = `0x${uuid.toString(16).toUpperCase()}`;
-  } else if (uuid.length > 6) {
+  } else if (uuid.length === 32 + 4 && regexExp.test(uuid)) {  // uuid
     hexCode = `0x${uuid.substring(4, 8).toUpperCase()}`;
   } else {
     hexCode = uuid;
@@ -261,7 +262,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <h2>Bluetooth Demo - v9.8</h2>
+        <h2>Bluetooth Demo - v9.9</h2>
         <div className={styles.section}>
           <button onClick={() => startScan(setLogs, setElogs)}>Start Scan</button>
         </div>
