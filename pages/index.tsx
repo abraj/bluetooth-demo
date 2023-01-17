@@ -28,6 +28,7 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
           //   dataPrefix: new Uint8Array([0x01, 0x02])
           // }],
         }],
+        optionalServices: [0xaf84],
         // optionalServices: ['battery_service'], // Required to access service later.
       });
       console.log('device:', device);
@@ -107,7 +108,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <h2>Bluetooth Demo - v6.3</h2>
+        <h2>Bluetooth Demo - v6.4</h2>
         <div className={styles.section}>
           <button onClick={() => startScan(setLogs, setElogs)}>Start Scan</button>
         </div>
