@@ -97,8 +97,8 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
 
         if (service) {
           const chars = await service.getCharacteristics();
-          console.log('chars:', chars);
-          setLogs((v: string[]) => [...v, `chars:${service}`]);  
+          console.log('chars:', chars.length, chars);
+          setLogs((v: string[]) => [...v, `chars:${chars}`]);  
         }
 
         // const service = await server.getPrimaryService('battery_service');
@@ -151,7 +151,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <h2>Bluetooth Demo - v7.8</h2>
+        <h2>Bluetooth Demo - v7.9</h2>
         <div className={styles.section}>
           <button onClick={() => startScan(setLogs, setElogs)}>Start Scan</button>
         </div>
