@@ -6,7 +6,7 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
   const printCharacteristic = async (characteristic: BluetoothRemoteGATTCharacteristic) => {
     const uuid = characteristic.uuid;
     const value = await characteristic.readValue();
-    const data = `>> ${uuid}: ${value}`;
+    const data = `${value}`;
     console.log(data);
     setLogs((v: string[]) => [...v, data]);
   };
@@ -174,7 +174,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <h2>Bluetooth Demo - v7.20</h2>
+        <h2>Bluetooth Demo - v7.21</h2>
         <div className={styles.section}>
           <button onClick={() => startScan(setLogs, setElogs)}>Start Scan</button>
         </div>
