@@ -5,10 +5,11 @@ import styles from '../styles/Home.module.css'
 const startScan = async (setLogs: Function, setElogs: Function) => {
   const printCharacteristic = async (characteristic: BluetoothRemoteGATTCharacteristic) => {
     // const uuid = characteristic.uuid;
+    // characteristic.properties.
     const value = await characteristic.readValue();
-    const data = value.buffer.byteLength;
-    console.log(data);
-    setLogs((v: string[]) => [...v, `${data}`]);
+    // const data = value.buffer.byteLength;
+    console.log(value);
+    setLogs((v: string[]) => [...v, `${value}}`]);
   };
   
   if ('bluetooth' in navigator) {
@@ -174,7 +175,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <h2>Bluetooth Demo - v7.22</h2>
+        <h2>Bluetooth Demo - v7.23</h2>
         <div className={styles.section}>
           <button onClick={() => startScan(setLogs, setElogs)}>Start Scan</button>
         </div>
