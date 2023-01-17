@@ -46,10 +46,16 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
       setLogs((v: string[]) => [...v, `B: ${device.gatt?.connected}`]);
 
       if (server) {
+        console.log(`C: ${device.gatt?.connected}`);
+        setLogs((v: string[]) => [...v, `C: ${device.gatt?.connected}`]);
+
         const service = await server.getPrimaryService('battery_service');
         console.log('service:', service);
         setLogs((v: string[]) => [...v, `${service}`]);
 
+        console.log(`D: ${device.gatt?.connected}`);
+        setLogs((v: string[]) => [...v, `D: ${device.gatt?.connected}`]);
+  
         const characteristic = await service.getCharacteristic('battery_level');
         console.log('characteristic:', characteristic);
         setLogs((v: string[]) => [...v, `${characteristic}`]);
@@ -91,7 +97,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <h2>Bluetooth Demo - v6</h2>
+        <h2>Bluetooth Demo - v6.1</h2>
         <div className={styles.section}>
           <button onClick={() => startScan(setLogs, setElogs)}>Start Scan</button>
         </div>
