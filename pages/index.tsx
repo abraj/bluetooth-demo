@@ -37,7 +37,7 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
 
   const getServiceName = (serviceUuid: number | string) => {
     if (typeof serviceUuid === 'string') {
-      return 'Unknown service!';
+      return 'Unknown service!!';
     }
     const servicehexCode = toHexString(serviceUuid);
     if (servicehexCode === '0x180A') {
@@ -59,8 +59,8 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
     // window.addEventListener("availabilitychanged", (event) => {});
 
     // const serviceUuid = 0x180A;
-    const serviceUuid = '0000180a-0000-1000-8000-00805f9b34fb';
-    // const serviceUuid = 'device_information';
+    // const serviceUuid = '0000180a-0000-1000-8000-00805f9b34fb';
+    const serviceUuid = 'device_information';
 
     // printLog('serviceUuid', toHexString(serviceUuid));
     printLog('serviceUuid', serviceUuid);
@@ -150,7 +150,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <h2>Bluetooth Demo - v8.7</h2>
+        <h2>Bluetooth Demo - v8.8</h2>
         <div className={styles.section}>
           <button onClick={() => startScan(setLogs, setElogs)}>Start Scan</button>
         </div>
