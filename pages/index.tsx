@@ -79,29 +79,35 @@ const getShortHexCode = (uuid: number | string) => {
   return hexCode;
 };
 
-const getServiceItem = (serviceUuid: number | string) => {
-  if (!serviceListMap.size) {
-    return null;
-  }
-  const serviceHexCode = getShortHexCode(serviceUuid);
-  return serviceListMap.get(serviceHexCode) || null;
-};
+// const getServiceItem = (serviceId: number | string) => {
+//   if (!serviceListMap.size) {
+//     return null;
+//   }
+//   let serviceHexCode = getShortHexCode(serviceId);
+//   if (serviceHexCode && !serviceHexCode.startsWith('0x')) {
+//     serviceHexCode = serviceListMap2.get(serviceId as string)?.code || '';
+//   }
+//   return serviceListMap.get(serviceHexCode) || null;
+// };
 
-const getServiceName = (serviceUuid: number | string) => {
+const getServiceName = (serviceId: number | string) => {
   if (!serviceListMap.size) {
     return 'Unloaded service..';
   }
-  const serviceHexCode = getShortHexCode(serviceUuid);
+  let serviceHexCode = getShortHexCode(serviceId);
+  if (serviceHexCode && !serviceHexCode.startsWith('0x')) {
+    serviceHexCode = serviceListMap2.get(serviceId as string)?.code || '';
+  }
   return serviceListMap.get(serviceHexCode)?.name || 'Unknown service';
 };
 
-const getCharacteristicItem = (characteristicUuid: number | string) => {
-  if (!characteristicListMap.size) {
-    return null;
-  }
-  const characteristicHexCode = getShortHexCode(characteristicUuid);
-  return characteristicListMap.get(characteristicHexCode) || null;
-};
+// const getCharacteristicItem = (characteristicUuid: number | string) => {
+//   if (!characteristicListMap.size) {
+//     return null;
+//   }
+//   const characteristicHexCode = getShortHexCode(characteristicUuid);
+//   return characteristicListMap.get(characteristicHexCode) || null;
+// };
 
 const getCharacteristicName = (characteristicUuid: number | string) => {
   if (!characteristicListMap.size) {
@@ -148,9 +154,9 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
   
     // window.addEventListener("availabilitychanged", (event) => {});
 
-    // const serviceUuid = 0x180A;
-    const serviceUuid = '0000180a-0000-1000-8000-00805f9b34fb';
-    // const serviceUuid = 'device_information';
+    // const serviceId = 0x180A;
+    // const serviceId = '0000180a-0000-1000-8000-00805f9b34fb';
+    const serviceId = 'device_information';
 
     const devicePr = navigator.bluetooth.requestDevice({
       // acceptAllDevices: true,
@@ -162,7 +168,7 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
         // }],
         // services: ['0000180a-0000-1000-8000-00805f9b34fb'],
       }],
-      optionalServices: [serviceUuid],
+      optionalServices: [serviceId],
     });
     if (!characteristicListMap.size) {
       initCharacteristicListMap();
@@ -196,14 +202,14 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
     printLog('device.connected', server.connected);
     printLog('------', '------');
 
-    const service = await server.getPrimaryService(serviceUuid);
+    const service = await server.getPrimaryService(serviceId);
     // const service = await server.getPrimaryService('battery_service');
 
     if (!service) {
-      printError(`Bluetooth GATT Service not found: ${getShortHexCode(serviceUuid)}`);
+      printError(`Bluetooth GATT Service not found: ${getShortHexCode(serviceId)}`);
       return;
     }
-    printLog('service.name', getServiceName(serviceUuid));
+    printLog('service.name', getServiceName(serviceId));
 
     const chars = await service.getCharacteristics();
     printLog('characteristics.count', chars.length);
@@ -247,7 +253,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <h2>Bluetooth Demo - v9.6</h2>
+        <h2>Bluetooth Demo - v9.7</h2>
         <div className={styles.section}>
           <button onClick={() => startScan(setLogs, setElogs)}>Start Scan</button>
         </div>
