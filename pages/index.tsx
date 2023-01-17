@@ -6,13 +6,11 @@ let decoder = new TextDecoder('utf-8');
 
 const startScan = async (setLogs: Function, setElogs: Function) => {
   const printCharacteristic = async (characteristic: BluetoothRemoteGATTCharacteristic) => {
-    // const uuid = characteristic.uuid;
-    // characteristic.properties.
+    const uuid = characteristic.uuid;
     const value = await characteristic.readValue();
     const text = decoder.decode(value);
-    // const data = value.buffer.byteLength;
     console.log(text);
-    setLogs((v: string[]) => [...v, `${typeof text}:${text.length}`]);
+    setLogs((v: string[]) => [...v, `${uuid}:${text}`]);
   };
   
   if ('bluetooth' in navigator) {
@@ -178,7 +176,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <h2>Bluetooth Demo - v8</h2>
+        <h2>Bluetooth Demo - v8.1</h2>
         <div className={styles.section}>
           <button onClick={() => startScan(setLogs, setElogs)}>Start Scan</button>
         </div>
