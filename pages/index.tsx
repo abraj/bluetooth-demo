@@ -100,10 +100,15 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
           console.log('chars:', chars.length, chars);
           setLogs((v: string[]) => [...v, `chars:${chars.length}`]);
 
-          chars.forEach(async (characteristic) => {
+          const plist = chars.map(async (characteristic) => {
             const value = await characteristic.readValue();
-            console.log('uuid,value:', characteristic.uuid, value);
-            setLogs((v: string[]) => [...v, `uuid,value:${characteristic.uuid},${value}`]);
+            return `uuid,value:${characteristic.uuid},${value}`;
+          });
+
+          const dlist = await Promise.all(plist);
+          dlist.forEach(data => {
+            console.log(data);
+            setLogs((v: string[]) => [...v, data]);
           });
         }
 
@@ -157,7 +162,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <h2>Bluetooth Demo - v7.15</h2>
+        <h2>Bluetooth Demo - v7.16</h2>
         <div className={styles.section}>
           <button onClick={() => startScan(setLogs, setElogs)}>Start Scan</button>
         </div>
