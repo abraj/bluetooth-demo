@@ -125,6 +125,9 @@ initServiceListMap();
 
 const startScan = async (setLogs: Function, setElogs: Function) => {
   serverConnected = false;
+  setLogs([]);
+  setElogs([]);
+
   const printLog = (name: string, value: string | boolean | number | undefined) => {
     if (value === undefined || value === null) value = '';
     const msg = `${name}: ${value.toString()}`;
