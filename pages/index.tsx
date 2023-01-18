@@ -254,10 +254,10 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
 
     // window.addEventListener("availabilitychanged", (event) => {});
   } catch (err: any) {
-    printError(err.toString());
     if (serverConnected && (err as Error).message.includes('connect first')) {
       printError('[Unexpected] Possible bug with the bluetooth implementation in this browser!', true);
     }
+    printError(err.toString());
   }  
 };
 
@@ -280,7 +280,7 @@ export default function Home() {
         <a href='chrome://flags/#enable-experimental-web-platform-features' target="_blank" rel="noreferrer">Flags</a>
       </div>
       <main className={styles.main}>
-        <h2>Bluetooth Demo - v9.16</h2>
+        <h2>Bluetooth Demo - v9.17</h2>
         <div className={styles.section}>
           <button onClick={() => startScan(setLogs, setElogs)}>Start Scan</button>
         </div>
