@@ -168,7 +168,7 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
       filters: [{
         // namePrefix: 'MacBook',
         manufacturerData: [{
-          companyIdentifier: 0x004c,
+          companyIdentifier: 0x004C,  // Apple
           // dataPrefix: new Uint8Array([0x01, 0x02])
         }],
         // services: ['0000180a-0000-1000-8000-00805f9b34fb'],
@@ -273,7 +273,7 @@ export default function Home() {
         <a href='chrome://flags/#enable-experimental-web-platform-features' target="_blank" rel="noreferrer">Flags</a>
       </div>
       <main className={styles.main}>
-        <h2>Bluetooth Demo - v9.12</h2>
+        <h2>Bluetooth Demo - v9.13</h2>
         <div className={styles.section}>
           <button onClick={() => startScan(setLogs, setElogs)}>Start Scan</button>
         </div>
