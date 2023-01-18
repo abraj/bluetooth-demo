@@ -200,17 +200,22 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
     }
     printLog('device.connected', device.gatt.connected);
 
-    const server = await device.gatt.connect();
-    if (!server) {
-      printError('Bluetooth GATT Server not found! [2]');
-      return;
+    let server: BluetoothRemoteGATTServer;
+    if (!device.gatt.connected) {
+      server = await device.gatt.connect();
+      if (!server) {
+        printError('Bluetooth GATT Server not found! [2]');
+        return;
+      }
+    } else {
+      server = device.gatt;
     }
 
-    if (!device.gatt.connected) {
+    if (!server.connected) {
       printError('Unable to connect to Bluetooth GATT Server!');
       return;
     }
-    printLog('device.connected', server.connected);
+    printLog('device.connected', server.connected);  
     serverConnected = server.connected;
     printLog('------', '------');
 
@@ -283,7 +288,7 @@ export default function Home() {
         <a href='chrome://flags/#enable-experimental-web-platform-features' target="_blank" rel="noreferrer">Flags</a>
       </div>
       <main className={styles.main}>
-        <h2>Bluetooth Demo - v9.19</h2>
+        <h2>Bluetooth Demo - v9.20</h2>
         <div className={styles.section}>
           <button onClick={() => startScan(setLogs, setElogs)}>Start Scan</button>
         </div>
