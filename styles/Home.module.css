@@ -9,3 +9,9 @@
 .section {
   margin: 2rem 0;
 }
+
+.flagBanner {
+  position: absolute;
+  top: 5px;
+  right: 15px;
+}

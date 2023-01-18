@@ -145,19 +145,23 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
   };
 
   if (!('bluetooth' in navigator)) {
-    printError('Bluetooth not supported!', true);
+    printError('This browser does not support Bluetooth! Please use Google Chrome (latest version).', true);
     return;
   }
   
   try {
-    // const status = await navigator.bluetooth.getAvailability();
-    // printLog('status', status);
-  
-    // window.addEventListener("availabilitychanged", (event) => {});
+    const status = await navigator.bluetooth.getAvailability();
+    if (!status) {
+      printError('This device does not have a Bluetooth adapter!');
+      return;
+    }
 
-    // const serviceId = 0x180A;
-    // const serviceId = '0000180a-0000-1000-8000-00805f9b34fb';
-    const serviceId = 'device_information';
+    // NOTE: Bluetooth 'turn on' status cannot be determined using Bluetooth Web API
+
+    const serviceId = 0x180A;  // uuid
+    // const serviceId = '0000180a-0000-1000-8000-00805f9b34fb';  // uuid
+    // const serviceId = 'device_information';  // name
+    // const serviceId = 'battery_service';  // name
 
     const devicePr = navigator.bluetooth.requestDevice({
       // acceptAllDevices: true,
@@ -168,8 +172,9 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
         //   dataPrefix: new Uint8Array([0x01, 0x02])
         // }],
         // services: ['0000180a-0000-1000-8000-00805f9b34fb'],
+        services: [serviceId],
       }],
-      optionalServices: [serviceId],
+      // optionalServices: [serviceId],
     });
     if (!characteristicListMap.size) {
       initCharacteristicListMap();
@@ -204,8 +209,6 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
     printLog('------', '------');
 
     const service = await server.getPrimaryService(serviceId);
-    // const service = await server.getPrimaryService('battery_service');
-
     if (!service) {
       printError(`Bluetooth GATT Service not found: ${getShortHexCode(serviceId)}`);
       return;
@@ -218,6 +221,17 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
 
     await printCharacteristic(chars[0]);
     await printCharacteristic(chars[1]);
+
+    // TODO::
+    // complete document and send it!
+    // convert above to promise format
+    // support for array of services
+    // study format of uuid: oreilly
+    // see all supported macbook services
+    // print data in tabular format
+    // support for multi-type data .readValue()
+    // Suupport for scan using manufacturer Id
+    // Support for full same (remove macbook restriction)
 
     // const plist = chars.map(async (characteristic) => {
     //   const value = await characteristic.readValue();
@@ -234,6 +248,8 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
     // const characteristic = await service.getCharacteristic('battery_level');
     // console.log('characteristic:', characteristic);
     // setLogs((v: string[]) => [...v, `${characteristic}`]);
+
+    // window.addEventListener("availabilitychanged", (event) => {});
   } catch (err: any) {
     printError(err.toString());
   }  
@@ -254,8 +270,11 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <div className={styles.flagBanner}>
+        <a href='chrome://flags/#enable-experimental-web-platform-features' target="_blank" rel="noreferrer">Flags</a>
+      </div>
       <main className={styles.main}>
-        <h2>Bluetooth Demo - v9.10</h2>
+        <h2>Bluetooth Demo - v9.11</h2>
         <div className={styles.section}>
           <button onClick={() => startScan(setLogs, setElogs)}>Start Scan</button>
         </div>
