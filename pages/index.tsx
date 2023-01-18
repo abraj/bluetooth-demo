@@ -166,11 +166,11 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
     const devicePr = navigator.bluetooth.requestDevice({
       // acceptAllDevices: true,
       filters: [{
-        namePrefix: 'MacBook',
-        // manufacturerData: [{
-        //   companyIdentifier: 0x00e0,
-        //   dataPrefix: new Uint8Array([0x01, 0x02])
-        // }],
+        // namePrefix: 'MacBook',
+        manufacturerData: [{
+          companyIdentifier: 0x004c,
+          // dataPrefix: new Uint8Array([0x01, 0x02])
+        }],
         // services: ['0000180a-0000-1000-8000-00805f9b34fb'],
       }],
       optionalServices: [serviceId],
