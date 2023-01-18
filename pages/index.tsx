@@ -6,6 +6,7 @@ import styles from '../styles/Home.module.css'
 
 // https://btprodspecificationrefs.blob.core.windows.net/assigned-numbers/Assigned%20Number%20Types/Assigned%20Numbers.pdf
 // https://googlechrome.github.io/samples/web-bluetooth/device-information-characteristics.html
+// https://developer.chrome.com/articles/bluetooth/
 
 // https://gist.github.com/sam016/4abe921b5a9ee27f67b3686910293026
 // https://gist.githubusercontent.com/sam016/4abe921b5a9ee27f67b3686910293026/raw/d3d8fb7fca459b9af757f6e4e4e0f1863a646b40/gatt-services-list.json
@@ -119,9 +120,11 @@ const getCharacteristicName = (characteristicUuid: number | string) => {
 };
 
 let decoder = new TextDecoder('utf-8');
+let serverConnected = false;
 initServiceListMap();
 
 const startScan = async (setLogs: Function, setElogs: Function) => {
+  serverConnected = false;
   const printLog = (name: string, value: string | boolean | number | undefined) => {
     if (value === undefined || value === null) value = '';
     const msg = `${name}: ${value.toString()}`;
@@ -205,6 +208,7 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
       return;
     }
     printLog('device.connected', server.connected);
+    serverConnected = server.connected;
     printLog('------', '------');
 
     const service = await server.getPrimaryService(serviceId);
@@ -223,9 +227,9 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
 
     // TODO::
     // complete document and send it!
+    // study format of uuid: oreilly
     // convert above to promise format
     // support for array of services
-    // study format of uuid: oreilly
     // see all supported macbook services
     // print data in tabular format
     // support for multi-type data .readValue()
@@ -251,6 +255,10 @@ const startScan = async (setLogs: Function, setElogs: Function) => {
     // window.addEventListener("availabilitychanged", (event) => {});
   } catch (err: any) {
     printError(err.toString());
+    printError((err as Error).message);
+    if (serverConnected && (err as Error).message.includes('connect first')) {
+      printError('[Unexpected] Possible bug with the bluetooth implementation in this browser!', true);
+    }
   }  
 };
 
@@ -273,7 +281,7 @@ export default function Home() {
         <a href='chrome://flags/#enable-experimental-web-platform-features' target="_blank" rel="noreferrer">Flags</a>
       </div>
       <main className={styles.main}>
-        <h2>Bluetooth Demo - v9.13</h2>
+        <h2>Bluetooth Demo - v9.15</h2>
         <div className={styles.section}>
           <button onClick={() => startScan(setLogs, setElogs)}>Start Scan</button>
         </div>
